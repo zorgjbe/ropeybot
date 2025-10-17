@@ -33,7 +33,7 @@ export enum ItemPermissionLevel {
 export interface API_Character_Data {
     ID: string;
     Name: string;
-    Nickname: string;
+    Nickname?: string;
     Description: string;
     Appearance: BC_AppearanceItem[];
     MemberNumber: number;
@@ -82,7 +82,7 @@ export function transformToCharacterData(
     }
     return {
         ...character,
-        Nickname: character.Nickname ?? "",
+        Nickname: character.Nickname,
         Description: character.Description ?? "",
         Appearance: character.Appearance ?? [],
         ActivePose: character.ActivePose ?? [],
@@ -125,10 +125,13 @@ export class API_Character {
     }
 
     public get Name(): string {
-        return this.data.Name;
+        return this.data.Nickname ?? this.data.Name;
     }
-    public get NickName(): string {
+    public get NickName(): string | undefined {
         return this.data.Nickname;
+    }
+    public get RealName(): string {
+        return this.Name;
     }
     public get Appearance(): AppearanceType {
         return this._appearance;
@@ -407,7 +410,7 @@ export class API_Character {
     }
 
     public toString(): string {
-        return this.NickName || this.Name;
+        return this.Name;
     }
 
     public sendItemUpdate(data: BC_AppearanceItem): void {
