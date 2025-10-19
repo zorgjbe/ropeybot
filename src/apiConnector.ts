@@ -857,6 +857,10 @@ export class API_Connector extends EventEmitter<ConnectorEvents> {
     public accountUpdate(update: Partial<API_Character_Data>): void {
         //console.log("Sending account update", actualUpdate);
         this.wrappedSock.emit("AccountUpdate", update);
+        if (this.chatRoom) {
+            // FIXME: there are a couple keys here which do not need a ChatRoomCharacterUpdate message
+            this.updateCharacter(update);
+        }
     }
 
     public moveOnMap(x: number, y: number): void {
