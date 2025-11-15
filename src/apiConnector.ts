@@ -703,11 +703,15 @@ export class API_Connector extends EventEmitter<ConnectorEvents> {
         console.log("creating room");
         this.roomCreatePromise = new PromiseResolve();
 
+        const room = structuredClone(roomDef);
+        if (room.Access) delete room.Locked;
+        if (room.Visibility) delete room.Private;
+
         const admins = [this._player!.MemberNumber, ...roomDef.Admin];
         let result;
         try {
             this.wrappedSock.emit("ChatRoomCreate", {
-                ...roomDef,
+                ...room,
                 Admin: admins,
             });
 
