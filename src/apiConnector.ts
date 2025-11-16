@@ -809,6 +809,11 @@ export class API_Connector extends EventEmitter<ConnectorEvents> {
         this.bot = bot;
     }
 
+    public stopBot() {
+        console.log("Disconnecting bot");
+        this.sock.disconnect();
+    }
+
     public setBotDescription(desc: string) {
         this.accountUpdate({
             Description: LZSTRING_MAGIC + lzString.compressToUTF16(desc),
