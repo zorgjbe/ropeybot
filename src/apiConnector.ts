@@ -248,7 +248,10 @@ export class API_Connector extends EventEmitter<ConnectorEvents> {
 
     public ChatRoomUpdate(update: Partial<API_Chatroom_Data>): void {
         // @ts-expect-error We make a copy but remove the keys that aren't necessary
-        const roomInfo: ServerChatRoomSettings = structuredClone(update);
+        const roomInfo: ServerChatRoomSettings = {
+            ...(this.chatRoom?.ToInfo() ?? {}),
+            ...structuredClone(update),
+        };
         delete roomInfo.Character;
         const payload: ServerChatRoomAdminUpdateRequest = {
             Action: "Update",
