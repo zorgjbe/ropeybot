@@ -27,7 +27,6 @@ import {
 import { Socket } from "socket.io-client";
 import { LogicBase } from "./logicBase.ts";
 import { API_AppearanceItem, BC_AppearanceItem } from "./item.ts";
-import lzString from "lz-string";
 import { EventEmitter } from "node:events";
 import { BC_Server_ChatRoomMessage } from "./logicEvent.ts";
 import { SocketWrapper } from "./socketWrapper.ts";
@@ -63,7 +62,6 @@ export interface RoomDefinition {
 
 // What the bot advertises as its game version
 const GAMEVERSION = "R122";
-const LZSTRING_MAGIC = "╬";
 
 class PromiseResolve<T> {
     public prom: Promise<T>;
@@ -815,9 +813,7 @@ export class API_Connector extends EventEmitter<ConnectorEvents> {
     }
 
     public setBotDescription(desc: string) {
-        this.accountUpdate({
-            Description: LZSTRING_MAGIC + lzString.compressToUTF16(desc),
-        });
+        this.Player.Description = desc;
     }
 
     public updateCharacterItem(update: ServerCharacterItemUpdate): void {

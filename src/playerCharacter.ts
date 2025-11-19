@@ -1,13 +1,22 @@
 import { API_Character, API_Character_Data } from "./apiCharacter.ts";
 import { API_Connector } from "./apiConnector.ts";
 import { BC_AppearanceItem } from "./item.ts";
+import lzString from "lz-string";
 
+const LZSTRING_MAGIC = "╬";
 export class API_PlayerCharacter extends API_Character {
     constructor(
         protected data: API_Character_Data,
         connection: API_Connector,
     ) {
         super(data, connection);
+    }
+
+    set Description(bio: string) {
+        this.data.Description = bio;
+        this.connection.accountUpdate({
+            Description: LZSTRING_MAGIC + lzString.compressToUTF16(bio),
+        });
     }
 
     // #region Online Shared Settings

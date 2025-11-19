@@ -16,6 +16,7 @@ import { API_Chatroom } from "./apiChatroom.ts";
 import { API_Connector, TellType } from "./apiConnector.ts";
 import { AppearanceType } from "./appearance.ts";
 import { BC_AppearanceItem } from "./item.ts";
+import lzString from "lz-string";
 
 interface PoseObject {
     Name: string;
@@ -114,6 +115,8 @@ export function isNaked(character: API_Character): boolean {
     );
 }
 
+export const LZSTRING_MAGIC = "╬";
+
 export class API_Character {
     private _appearance: AppearanceType;
 
@@ -147,6 +150,21 @@ export class API_Character {
     public get WhiteList(): number[] {
         return this.data.WhiteList;
     }
+
+    private _description?: string = undefined;
+    public get Description(): string {
+        if (!this._description) {
+            if (this.data.Description.startsWith(LZSTRING_MAGIC)) {
+                this._description = lzString.decompressFromUTF16(
+                    this.data.Description,
+                );
+            } else {
+                this._description = this.data.Description;
+            }
+        }
+        return this._description;
+    }
+
     protected manageWhitelist(arg: "add" | "remove", ...members: number[]) {
         const list = new Set(this.connection.Player.WhiteList);
         let update = false;
